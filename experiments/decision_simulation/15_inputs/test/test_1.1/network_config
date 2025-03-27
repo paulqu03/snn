@@ -1,0 +1,75 @@
+N_E1 = 100
+N_E2 = 100
+N_I1 = 20
+N_I2 = 20
+
+eqs_E1 = '''
+dv/dt = -v / tau_E1 : volt (unless refractory)
+'''
+eqs_E2 = '''
+dv/dt = -v / tau_E2 : volt (unless refractory)
+'''
+eqs_I1 = '''
+dv/dt = -v / tau_I1 : volt (unless refractory)
+'''
+eqs_I2 = '''
+dv/dt = -v / tau_I2 : volt (unless refractory)
+'''
+
+tau_E1 = 10*ms
+tau_E2 = 10*ms
+tau_I1 = 10*ms
+tau_I2 = 10*ms
+
+v_threshold_E1 = 20*mV
+v_threshold_E2 = 20*mV
+v_threshold_I1 = 15*mV
+v_threshold_I2 = 15*mV
+
+v_reset_E1 = 0*mV
+v_reset_E2 = 0*mV
+v_reset_I1 = 0*mV
+v_reset_I2 = 0*mV
+
+refractory_time_E1 = 0*ms
+refractory_time_E2 = 0*ms
+refractory_time_I1 = 0*ms
+refractory_time_I2 = 0*ms
+
+input_rate = 50*Hz
+
+v_post_poisson_01 = 0.04*mV
+v_post_poisson_02 = 0.04*mV
+v_post_poisson_03 = 0.04*mV
+v_post_poisson_04 = 0.04*mV
+v_post_poisson_05 = 0.04*mV
+v_post_poisson_06 = 0.05*mV
+v_post_poisson_07 = 0.05*mV
+v_post_poisson_08 = 0.05*mV
+v_post_poisson_09 = 0.05*mV
+v_post_poisson_10 = 0.05*mV
+v_post_poisson_11 = 0.03*mV
+v_post_poisson_12 = 0.03*mV
+v_post_poisson_13 = 0.03*mV
+v_post_poisson_14 = 0.03*mV
+v_post_poisson_15 = 0.03*mV
+
+v_post_E1 = 3.7*mV
+v_post_E2 = 3.7*mV
+v_post_I1 = 3.35*mV
+v_post_I2 = 3.35*mV
+
+v_post_E1_self = 0.3*mV
+v_post_E2_self = 0.3*mV
+v_post_I1_self = 0.01*mV
+v_post_I2_self = 0.01*mV
+
+p_E1_E1 = 0.05
+p_E2_E2 = 0.05
+p_I1_I1 = 0.05 
+p_I2_I2 = 0.05
+
+p_E1_I1 = 0.15
+p_E2_I2 = 0.15
+p_I1_E2 = 0.25
+p_I2_E1 = 0.25
