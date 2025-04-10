@@ -6,7 +6,7 @@ import random
 import pickle
 
 #pickle_name = 'network_config.pkl'
-base_path = './experiments/decision_simulation/fixed_model/v_post_stim'
+base_path = './experiments/decision_simulation/fixed_model/sigma'
 
 def create_directory(path):
     if not os.path.exists(path):
@@ -42,7 +42,7 @@ runtime = 2000 * ms         # total simulation time
 
 tau_E1 = 20*ms
 tau_E2 = 20*ms
-tau_I = 10*ms
+tau_I = 1*ms
 
 v_threshold_E1 = 15*mV
 v_threshold_E2 = 15*mV
@@ -165,8 +165,8 @@ net.store()
 # Set Parameters
 # -------------------------------------------------------
 
-experiment = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]*mV
-experiment_name = "v_post_stim"
+experiment = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20]*Hz
+experiment_name = "sigma"
 
 # -------------------------------------------------------
 # Run simulation and generate plots
@@ -175,19 +175,37 @@ for value in experiment:
 
     net.restore()
 
-    folder_name = f"{experiment_name}_{float(value/mV)}mV"
+    folder_name = f"{experiment_name}_{float(value)}Hz"
     experiment_path = os.path.join(base_path, folder_name)
     #pickle_path = os.path.join(experiment_path, pickle_name)
     create_directory(experiment_path)
     
-    net.remove(S_stimE1, S_stimE2)
+    net.remove(stiminputE1, stiminputE2, S_stimE1, S_stimE2, S_E1, S_E2)
 
-    S_stimE1 = Synapses(stiminputE1, E1, on_pre='v += value', name='C_stimE1', delay=0.5*ms)
+    stiminputE1 = PoissonGroup(20, rates=0*Hz, name='stiminputE1')
+    stiminputE2 = PoissonGroup(20, rates=0*Hz, name='stiminputE2')
+        
+    # Jede 50 ms wird die Rate neu gesetzt
+    stiminputE1.run_regularly(
+        "rates = int(t > stim_on and t < stim_off) * "
+        "(mu0 + value*randn())",
+        dt=stim_interval
+    )
+    stiminputE2.run_regularly(
+        "rates = int(t > stim_on and t < stim_off) * "
+        "(mu1 + value*randn())",
+        dt=stim_interval
+    )
+
+    S_stimE1 = Synapses(stiminputE1, E1, on_pre='v += v_post_stim', name='C_stimE1', delay=0.5*ms)
     S_stimE1.connect(p=p_P_E1)
-    S_stimE2 = Synapses(stiminputE2, E2, on_pre='v += value', name='C_stimE2', delay=0.5*ms)
+    S_stimE2 = Synapses(stiminputE2, E2, on_pre='v += v_post_stim', name='C_stimE2', delay=0.5*ms)
     S_stimE2.connect(p=p_P_E2)
 
-    net.add(S_stimE1, S_stimE2)
+    S_E1 = StateMonitor(stiminputE1, 'rates', record=0, dt=1*ms)
+    S_E2 = StateMonitor(stiminputE2, 'rates', record=0, dt=1*ms)
+
+    net.add(stiminputE1, stiminputE2, S_stimE1, S_stimE2, S_E1, S_E2)
     net.store()
 
     for i in range(20):
